@@ -1,6 +1,10 @@
 package proyectoalgoritmosordenamiento;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
 
@@ -8,6 +12,14 @@ import javax.swing.ImageIcon;
  */
 public class PantallaPrincipal extends javax.swing.JFrame
 {
+    DefaultTableModel modelo;
+    
+    Tenista tenista = new Tenista();
+    
+    Tenista[] listaTenista = new Tenista[15];
+    int contadorTenista = 0;
+//    ArrayList<Tenista> listaTenista;
+    
 
     /**
      Creates new form PantallaPrincipal
@@ -15,7 +27,17 @@ public class PantallaPrincipal extends javax.swing.JFrame
     public PantallaPrincipal()
     {
         initComponents();
+        
+        //cambia el icono del formulario principal.
         setIconImage(new ImageIcon(getClass().getResource("/resources/tennis.png")).getImage());
+        
+        //Dibuja la tabla.
+        modelo = new DefaultTableModel();
+        modelo.addColumn("Nombre");
+        modelo.addColumn("País");
+        modelo.addColumn("Edad");
+        modelo.addColumn("Puntaje");
+        this.tblTenistas.setModel(modelo);
     }
 
     /**
@@ -44,7 +66,7 @@ public class PantallaPrincipal extends javax.swing.JFrame
         txtPuntaje = new javax.swing.JTextField();
         btnAgregar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblTenistas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tenistas");
@@ -83,7 +105,8 @@ public class PantallaPrincipal extends javax.swing.JFrame
         jLabel2.setText("Bienvenido");
 
         cmbMetodosOrdenamiento.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        cmbMetodosOrdenamiento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciones", "Insercción", "Quicksort", "Participación" }));
+        cmbMetodosOrdenamiento.setForeground(java.awt.SystemColor.controlDkShadow);
+        cmbMetodosOrdenamiento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Insercción", "Quicksort", "Participación" }));
         cmbMetodosOrdenamiento.setBorder(null);
         cmbMetodosOrdenamiento.setFocusable(false);
 
@@ -126,22 +149,27 @@ public class PantallaPrincipal extends javax.swing.JFrame
         btnAgregar.setBorder(null);
         btnAgregar.setBorderPainted(false);
         btnAgregar.setFocusPainted(false);
+        btnAgregar.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                btnAgregarMouseClicked(evt);
+            }
+        });
 
-        jTable1.setBackground(java.awt.SystemColor.inactiveCaption);
-        jTable1.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        jTable1.setForeground(java.awt.SystemColor.controlDkShadow);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblTenistas.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        tblTenistas.setForeground(java.awt.SystemColor.controlDkShadow);
+        tblTenistas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][]
             {
-
+                {null, null, null, null}
             },
             new String []
             {
                 "Nombre completo", "País", "Edad", "Puntaje"
             }
         ));
-        jTable1.setGridColor(java.awt.SystemColor.inactiveCaption);
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblTenistas);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -173,11 +201,11 @@ public class PantallaPrincipal extends javax.swing.JFrame
                             .addComponent(txtPuntaje, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addComponent(cmbMetodosOrdenamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(101, 101, 101))
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -204,8 +232,8 @@ public class PantallaPrincipal extends javax.swing.JFrame
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(txtPuntaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
@@ -228,6 +256,51 @@ public class PantallaPrincipal extends javax.swing.JFrame
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
 
+    private void btnAgregarMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnAgregarMouseClicked
+    {//GEN-HEADEREND:event_btnAgregarMouseClicked
+        AgragarDatosTabla();
+    }//GEN-LAST:event_btnAgregarMouseClicked
+    
+    public Tenista obtenerDatos()
+    {
+        Tenista nuevoTenista = new Tenista();
+        
+        try
+        {
+            nuevoTenista.setNombre(txtNombreCompleto.getText().trim());
+            nuevoTenista.setPais(txtPais.getText().trim());
+            nuevoTenista.setEdad(txtEdad.getText().trim());
+            nuevoTenista.setPuntaje(txtPuntaje.getText().trim());
+            
+        }catch(Exception err)
+        {
+            JOptionPane.showMessageDialog(null, "Ha ocurrido un error." + err,"Error",JOptionPane.ERROR_MESSAGE);
+        }
+        return nuevoTenista;
+    }
+    
+    public void AgragarDatosTabla()
+    {
+        listaTenista[contadorTenista] = obtenerDatos();
+        
+        String[] filas = new String[4];
+        
+        if(contadorTenista != 14)
+        {
+            filas[0] = listaTenista[contadorTenista].getNombre();
+            filas[1] = listaTenista[contadorTenista].getPais();
+            filas[2] = listaTenista[contadorTenista].getEdad();
+            filas[3] = listaTenista[contadorTenista].getPuntaje();
+            modelo.addRow(filas);
+            
+            contadorTenista++;
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Se ha llegado al maximo número de tenistas.","Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     /**
      @param args the command line arguments
      */
@@ -285,7 +358,7 @@ public class PantallaPrincipal extends javax.swing.JFrame
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblTenistas;
     private javax.swing.JTextField txtEdad;
     private javax.swing.JTextField txtNombreCompleto;
     private javax.swing.JTextField txtPais;
