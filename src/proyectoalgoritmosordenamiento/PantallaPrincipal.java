@@ -1,26 +1,29 @@
 package proyectoalgoritmosordenamiento;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
-/**
-
+/*
  @author Jason
  */
 public class PantallaPrincipal extends javax.swing.JFrame
 {
     DefaultTableModel modelo;
-    
+    TableRowSorter sort;
+        
     Tenista tenista = new Tenista();
     
     Tenista[] listaTenista = new Tenista[15];
-    int contadorTenista = 0;
-//    ArrayList<Tenista> listaTenista;
+    int contadorTenista = 0; //Lleva el recuento de tenistas.
     
-
+    Tenista[] listaTenistaAux = new Tenista[15];
+    int contadorTenistaAux = 0;
+    
+    String[] listaPuntajes = new String[15];
+    
+    
     /**
      Creates new form PantallaPrincipal
      */
@@ -33,11 +36,15 @@ public class PantallaPrincipal extends javax.swing.JFrame
         
         //Dibuja la tabla.
         modelo = new DefaultTableModel();
-        modelo.addColumn("Nombre");
+        modelo.addColumn("Tenista");
         modelo.addColumn("País");
         modelo.addColumn("Edad");
         modelo.addColumn("Puntaje");
         this.tblTenistas.setModel(modelo);
+        
+        sort = new TableRowSorter(tblTenistas.getModel());
+        tblTenistas.setRowSorter(sort);
+        
     }
 
     /**
@@ -67,6 +74,9 @@ public class PantallaPrincipal extends javax.swing.JFrame
         btnAgregar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTenistas = new javax.swing.JTable();
+        rdbPuntajeDesendente = new javax.swing.JRadioButton();
+        rdbEdadAsendente = new javax.swing.JRadioButton();
+        rdbAlfafetico = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tenistas");
@@ -98,6 +108,13 @@ public class PantallaPrincipal extends javax.swing.JFrame
         btnActualizar.setBorder(null);
         btnActualizar.setBorderPainted(false);
         btnActualizar.setFocusPainted(false);
+        btnActualizar.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                btnActualizarMouseClicked(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         jLabel2.setForeground(java.awt.SystemColor.controlDkShadow);
@@ -106,7 +123,7 @@ public class PantallaPrincipal extends javax.swing.JFrame
 
         cmbMetodosOrdenamiento.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         cmbMetodosOrdenamiento.setForeground(java.awt.SystemColor.controlDkShadow);
-        cmbMetodosOrdenamiento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Insercción", "Quicksort", "Participación" }));
+        cmbMetodosOrdenamiento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Insercción", "Burbuja" }));
         cmbMetodosOrdenamiento.setBorder(null);
         cmbMetodosOrdenamiento.setFocusable(false);
 
@@ -169,7 +186,31 @@ public class PantallaPrincipal extends javax.swing.JFrame
                 "Nombre completo", "País", "Edad", "Puntaje"
             }
         ));
+        tblTenistas.setRowSelectionAllowed(false);
         jScrollPane1.setViewportView(tblTenistas);
+
+        rdbPuntajeDesendente.setSelected(true);
+        rdbPuntajeDesendente.setText("Puntaje Desc");
+        rdbPuntajeDesendente.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                rdbPuntajeDesendenteStateChanged(evt);
+            }
+        });
+
+        rdbEdadAsendente.setText("Edad Asen");
+        rdbEdadAsendente.setEnabled(false);
+        rdbEdadAsendente.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                rdbEdadAsendenteStateChanged(evt);
+            }
+        });
+
+        rdbAlfafetico.setText("Alfabetico");
+        rdbAlfafetico.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -183,64 +224,76 @@ public class PantallaPrincipal extends javax.swing.JFrame
                         .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel3))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPais, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPuntaje, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(cmbMetodosOrdenamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(101, 101, 101))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel3))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtPais, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtPuntaje, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbMetodosOrdenamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(rdbPuntajeDesendente, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(rdbEdadAsendente, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(rdbAlfafetico, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 14, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(txtPuntaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel3)
+                                    .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(txtPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel6)
+                                    .addComponent(txtPuntaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(btnAgregar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(cmbMetodosOrdenamiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbMetodosOrdenamiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rdbPuntajeDesendente)
+                    .addComponent(rdbEdadAsendente)
+                    .addComponent(rdbAlfafetico))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -258,8 +311,56 @@ public class PantallaPrincipal extends javax.swing.JFrame
 
     private void btnAgregarMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnAgregarMouseClicked
     {//GEN-HEADEREND:event_btnAgregarMouseClicked
-        AgragarDatosTabla();
+        try
+        {
+            if((txtNombreCompleto.getText().isEmpty() != true) && (txtPais.getText().isEmpty() != true) &&
+                (txtEdad.getText().isEmpty() != true) && (txtPuntaje.getText().isEmpty() != true))
+        {
+            AgragarDatosTabla();
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Hay espacios sin llenar", "Error", JOptionPane.WARNING_MESSAGE);
+        }
+        }
+        catch(Exception err)
+        {
+            JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.WARNING_MESSAGE);
+        }
+        
+        
     }//GEN-LAST:event_btnAgregarMouseClicked
+
+    private void btnActualizarMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnActualizarMouseClicked
+    {//GEN-HEADEREND:event_btnActualizarMouseClicked
+        
+    }//GEN-LAST:event_btnActualizarMouseClicked
+
+    private void rdbPuntajeDesendenteStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_rdbPuntajeDesendenteStateChanged
+    {//GEN-HEADEREND:event_rdbPuntajeDesendenteStateChanged
+        if(rdbPuntajeDesendente.isSelected() == true)
+        {
+            rdbEdadAsendente.setEnabled(false);
+            rdbAlfafetico.setEnabled(false);
+        }else
+        {
+            rdbEdadAsendente.setEnabled(true);
+            rdbAlfafetico.setEnabled(true);
+        }   
+    }//GEN-LAST:event_rdbPuntajeDesendenteStateChanged
+
+    private void rdbEdadAsendenteStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_rdbEdadAsendenteStateChanged
+    {//GEN-HEADEREND:event_rdbEdadAsendenteStateChanged
+        if(rdbEdadAsendente.isSelected() == true)
+        {
+            rdbPuntajeDesendente.setEnabled(false);
+            rdbAlfafetico.setEnabled(false);
+        }else
+        {
+            rdbPuntajeDesendente.setEnabled(true);
+            rdbAlfafetico.setEnabled(true);
+        } 
+    }//GEN-LAST:event_rdbEdadAsendenteStateChanged
     
     public Tenista obtenerDatos()
     {
@@ -269,8 +370,8 @@ public class PantallaPrincipal extends javax.swing.JFrame
         {
             nuevoTenista.setNombre(txtNombreCompleto.getText().trim());
             nuevoTenista.setPais(txtPais.getText().trim());
-            nuevoTenista.setEdad(txtEdad.getText().trim());
-            nuevoTenista.setPuntaje(txtPuntaje.getText().trim());
+            nuevoTenista.setEdad(Integer.parseInt(txtEdad.getText()));
+            nuevoTenista.setPuntaje(Integer.parseInt(txtPuntaje.getText().trim()));
             
         }catch(Exception err)
         {
@@ -285,12 +386,12 @@ public class PantallaPrincipal extends javax.swing.JFrame
         
         String[] filas = new String[4];
         
-        if(contadorTenista != 14)
+        if(contadorTenista != 14) //Evalua el número de tenistas que se pueden agregar
         {
             filas[0] = listaTenista[contadorTenista].getNombre();
             filas[1] = listaTenista[contadorTenista].getPais();
-            filas[2] = listaTenista[contadorTenista].getEdad();
-            filas[3] = listaTenista[contadorTenista].getPuntaje();
+            filas[2] = String.valueOf(listaTenista[contadorTenista].getEdad());
+            filas[3] = String.valueOf(listaTenista[contadorTenista].getPuntaje());
             modelo.addRow(filas);
             
             contadorTenista++;
@@ -298,6 +399,42 @@ public class PantallaPrincipal extends javax.swing.JFrame
         else
         {
             JOptionPane.showMessageDialog(null, "Se ha llegado al maximo número de tenistas.","Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public void MetodoBurbuja(int[] lista)
+    {
+        for (int j = 0; j < 14; j++)
+        {
+            for(int i = 0; i < (14 - 1); i++) 
+            {
+                if (lista[i] > lista [i + 1])
+                {
+                    int aux;
+                    aux = lista[i];
+                    lista[i] = lista[i + 1];
+                    lista[i + 1] = aux;
+                }
+            }
+        }
+    }
+    
+    public void MetodoInsercion(int[] lista)
+    {
+        int i;
+        int clave;
+        int j;                
+
+        for (i = 1; i < 14; i++)
+        {	   
+            clave = lista[i];
+            j = i - 1;
+            while (j >= 0 && lista[i] > clave)
+            {
+                    lista[j + 1] = lista[j];
+                    j = j - 1;
+            }
+            lista[j + 1] = clave;
         }
     }
     
@@ -358,6 +495,9 @@ public class PantallaPrincipal extends javax.swing.JFrame
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JRadioButton rdbAlfafetico;
+    private javax.swing.JRadioButton rdbEdadAsendente;
+    private javax.swing.JRadioButton rdbPuntajeDesendente;
     private javax.swing.JTable tblTenistas;
     private javax.swing.JTextField txtEdad;
     private javax.swing.JTextField txtNombreCompleto;
